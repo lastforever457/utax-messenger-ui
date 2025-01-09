@@ -26,6 +26,12 @@ const Main = () => {
                 >
                     Bot a&apos;zo bo&apos;lgan guruhlar
                 </Link>
+                <Link
+                    to={'/active'}
+                    className="bg-white rounded-lg shadow-lg p-4 md:p-6 w-full md:w-80 text-lg font-semibold text-blue-500 hover:text-blue-700 hover:bg-gray-100 transition-all duration-300"
+                >
+                    Aktiv xabarlar
+                </Link>
             </div>
         </div>
     )
