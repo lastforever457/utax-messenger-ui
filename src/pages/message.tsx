@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { Button, Form, Select, TimePicker } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../axios'
 import { weekdays } from '../types'
@@ -10,10 +10,10 @@ const Message = () => {
     const { mutate } = useMutation({
         mutationKey: ['add-message'],
         mutationFn: async (data: Record<string, any>) => {
-            await api.post('/message/create', data)
+            await api.post('/message/create', { data })
         },
     })
-    const [messageInterval, setMessageInterval] = useState('Bir marta')
+    const [messageInterval, setMessageInterval] = useState<string>('ONCE')
     const [form] = Form.useForm()
     const [selectedWeekdays, setSelectedWeekdays] = useState<weekdays[]>([
         'MONDAY',
@@ -29,20 +29,18 @@ const Message = () => {
             interval: messageInterval,
         })
     }, [])
-    const onFinish = (values: Record<string, any>) => {
-        console.log('Success:', {
-            ...values,
-            sendTime: values.sendTime.format('HH:mm'),
-            interval: messageInterval,
-        })
-        if (messageInterval !== 'ONCE') {
-            mutate({
-                ...values,
-                sendTime: values.sendTime.format('HH:mm'),
-                interval: messageInterval,
-            })
-        }
-    }
+    const onFinish = useCallback(
+        (values: Record<string, any>) => {
+            if (messageInterval !== 'Bir marta') {
+                mutate({
+                    text: values.message,
+                    sendTime: values.sendTime.format('HH:mm'),
+                    interval: messageInterval,
+                })
+            }
+        },
+        [messageInterval, mutate]
+    )
     return (
         <div className="flex flex-col items-center justify-center bg-blue-500 w-full">
             <h1 className="text-2xl font-bold text-white drop-shadow-md mb-12">
@@ -71,33 +69,34 @@ const Message = () => {
                     />
                 </Form.Item>
                 <Form.Item name={'interval'} label="Interval">
-                    <Select onChange={(value) => setMessageInterval(value)}>
+                    <Select
+                        onChange={(value) => {
+                            console.log(value)
+                            setMessageInterval(value)
+                        }}
+                    >
                         <Select.Option value="ONCE">Bir marta</Select.Option>
-                        <Select.Option value="EVERY_HOUR">
-                            Har soatda
-                        </Select.Option>
-                        <Select.Option value="EVERY_DAY">
-                            Har kuni
-                        </Select.Option>
-                        <Select.Option value="EVERY_WEEK">
+                        <Select.Option value="HOURLY">Har soatda</Select.Option>
+                        <Select.Option value="DAYLY">Har kuni</Select.Option>
+                        <Select.Option value="WEEKLY">
                             Hafta kunlari
                         </Select.Option>
                     </Select>
                 </Form.Item>
-                {messageInterval === 'EVERY_WEEK' && (
+                {messageInterval === 'WEEKLY' && (
                     <Form.Item label="Hafta kunlari" name={'weekdays'}>
                         <Select
                             mode="multiple"
                             onChange={(value) => setSelectedWeekdays(value)}
                             defaultValue={selectedWeekdays}
                         >
-                            <Select.Option value="EVERY_HOUR">
+                            <Select.Option value="HOURLY">
                                 Har soatda
                             </Select.Option>
-                            <Select.Option value="EVERY_DAY">
+                            <Select.Option value="DAYLY">
                                 Har kuni
                             </Select.Option>
-                            <Select.Option value="EVERY_WEEK">
+                            <Select.Option value="WEEKLY">
                                 Hafta kunlari
                             </Select.Option>
                         </Select>

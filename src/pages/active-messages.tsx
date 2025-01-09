@@ -2,11 +2,16 @@ import { useQuery } from '@tanstack/react-query'
 import { Button, Segmented, Space, Spin, Table, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { FaTrashCan } from 'react-icons/fa6'
+import { Link } from 'react-router-dom'
 import { api } from '../axios'
 
 const ActiveMessages = () => {
     const { Title } = Typography
-    const { data: messages, isLoading } = useQuery({
+    const {
+        data: messages,
+        isLoading,
+        refetch: refetchMessages,
+    } = useQuery({
         queryKey: ['active-messages'],
         queryFn: async () => {
             const data = await api.post('/message/find-many', {})
@@ -14,7 +19,11 @@ const ActiveMessages = () => {
         },
     })
 
-    const { data: photos, isLoading: isLoadingPhotos } = useQuery({
+    const {
+        data: photos,
+        isLoading: isLoadingPhotos,
+        refetch: refetchPhotos,
+    } = useQuery({
         queryKey: ['active-photos'],
         queryFn: async () => {
             const data = await api.post('/photo/find-many', {})
@@ -52,11 +61,27 @@ const ActiveMessages = () => {
         },
         {
             title: 'Amallar',
-            dataIndex: '',
+            dataIndex: 'actions',
             key: 'actions',
-            render: () => (
+            render: (id: string) => (
                 <Space>
-                    <Button type="primary" danger>
+                    <Button
+                        onClick={async () => {
+                            try {
+                                await api.post('/message/delete', {
+                                    where: {
+                                        id,
+                                    },
+                                })
+                                refetchMessages()
+                                refetchPhotos()
+                            } catch (error) {
+                                console.log(error)
+                            }
+                        }}
+                        type="primary"
+                        danger
+                    >
                         <FaTrashCan />
                     </Button>
                 </Space>
@@ -89,6 +114,9 @@ const ActiveMessages = () => {
                 value={segmentedValue}
                 onChange={(value) => setSegmentedValue(value)}
             />
+            <Link className="block mt-2" to={'/'}>
+                <Button type="primary">Bosh sahifa</Button>
+            </Link>
             <div className="mt-6">
                 <Table
                     columns={columns}
@@ -102,6 +130,7 @@ const ActiveMessages = () => {
                                   ) => ({
                                       ...item,
                                       index: index + 1,
+                                      actions: item.id,
                                   })
                               )
                             : []
