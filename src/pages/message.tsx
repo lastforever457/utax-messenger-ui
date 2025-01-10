@@ -25,7 +25,7 @@ const Message = () => {
                 await api.post('/message/create', { data })
             } catch (error) {
                 console.error('Error creating message:', error)
-                throw new Error('Failed to create message')
+                message.error('Xabarni rejalashtirishda xatolik yuz berdi')
             }
         },
     })
@@ -65,14 +65,16 @@ const Message = () => {
 
             if (values.interval !== 'ONCE') {
                 mutate(sendData)
+                message.success('Xabar yuborish rejalashtirildi')
             } else {
-                console.log('hello')
                 for (const group of groups) {
                     await telegramApi.post('/sendMessage', {
                         chat_id: `-${group.groupId}`,
                         text: values.message,
                     })
                 }
+
+                message.success('Xabar muvaffaqiyatli yuborildi')
             }
             setIsSubmitting(false)
         },

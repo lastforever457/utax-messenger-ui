@@ -13,6 +13,7 @@ const Photo = () => {
     const [loading, setLoading] = useState(false)
     const [imageUrl, setImageUrl] = useState<string | null>(null)
     const [previewVisible, setPreviewVisible] = useState(false)
+    const [isSending, setIsSending] = useState(false)
 
     const uploadProps = {
         name: 'file',
@@ -74,7 +75,7 @@ const Photo = () => {
                 await api.post('/photo/create', { data })
             } catch (error) {
                 console.error('Error creating photo:', error)
-                throw new Error('Failed to create photo')
+                message.error('Xabarni rejalashtirishda xatolik yuz berdi')
             }
         },
     })
@@ -96,6 +97,7 @@ const Photo = () => {
 
     const onFinish = useCallback(
         async (values: Record<string, any>) => {
+            setIsSending(true)
             const sendData = {
                 caption: values.message,
                 image: imageUrl,
@@ -108,8 +110,8 @@ const Photo = () => {
 
             if (values.interval !== 'ONCE') {
                 mutate(sendData)
+                message.success('Xabarni yuborish rejalashtirildi')
             } else {
-                console.log('hello')
                 for (const group of groups) {
                     await telegramApi.post('/sendPhoto', {
                         chat_id: `-${group.groupId}`,
@@ -117,9 +119,11 @@ const Photo = () => {
                         caption: values.message,
                     })
                 }
+                message.success('Xabarni yuborish rejalashtirildi')
             }
 
             form.resetFields()
+            setIsSending(false)
         },
         [mutate, groups, imageUrl, form]
     )
@@ -239,6 +243,7 @@ const Photo = () => {
                         type="primary"
                         size="large"
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg w-full md:w-auto"
+                        disabled={isSending}
                     >
                         Yuborish
                     </Button>

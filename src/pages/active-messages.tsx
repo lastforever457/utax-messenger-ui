@@ -68,21 +68,11 @@ const ActiveMessages = () => {
             render: (id: string) => (
                 <Space>
                     <Button
-                        onClick={async () => {
-                            try {
-                                await api.post('/message/delete', {
-                                    where: {
-                                        id,
-                                    },
-                                })
-                                refetchMessages()
-                                refetchPhotos()
-                            } catch (error) {
-                                console.log(error)
-                            }
-                        }}
+                        onClick={() => handleDelete(id)}
                         type="primary"
                         danger
+                        disabled={Boolean(deleteLoading[id])}
+                        loading={deleteLoading[id]}
                     >
                         <FaTrashCan />
                     </Button>
@@ -96,6 +86,27 @@ const ActiveMessages = () => {
         () => (segmentedValue === 'message' ? messages : photos),
         [segmentedValue, messages, photos]
     )
+
+    const [deleteLoading, setDeleteLoading] = useState<Record<string, boolean>>(
+        {}
+    )
+
+    const handleDelete = async (id: string) => {
+        setDeleteLoading((prev) => ({ ...prev, [id]: true }))
+        try {
+            await api.post('/message/delete', {
+                where: {
+                    id,
+                },
+            })
+            refetchMessages()
+            refetchPhotos()
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setDeleteLoading((prev) => ({ ...prev, [id]: false }))
+        }
+    }
 
     if (isLoading && isLoadingPhotos) {
         return (
