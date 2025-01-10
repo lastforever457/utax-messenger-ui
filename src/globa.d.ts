@@ -1,13 +1,13 @@
 declare global {
-    interface Window {
-        Telegram: {
-            WebApp: {
-                viewportHeight: number
-                expand: () => void
-                ready: () => void
-            }
-        }
+  interface Window {
+    Telegram: {
+      WebApp: {
+        viewportHeight: number
+        expand: () => void
+        ready: () => void
+      }
     }
+  }
 }
 
 export {}

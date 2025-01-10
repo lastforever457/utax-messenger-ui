@@ -3,13 +3,16 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.tsx'
 import './index.css'
+import { UserProvider } from './user-context.tsx'
 
 const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')!).render(
-    <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-            <App />
-        </QueryClientProvider>
-    </BrowserRouter>
+  <BrowserRouter>
+    <UserProvider>
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    </UserProvider>
+  </BrowserRouter>
 )

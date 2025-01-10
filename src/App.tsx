@@ -1,42 +1,43 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import ActiveMessages from './pages/active-messages'
 import Group from './pages/group'
 import Main from './pages/main'
 import Message from './pages/message'
+import PermissionDenied from './pages/permission-denied'
 import Photo from './pages/photo'
+import { useUserId } from './user-context'
 
 function App() {
-    const [currentUserId, setCurrentUserId] = useState<string | number | null>(
-        null
-    )
+  const { setUserId, userId } = useUserId()
 
-    useEffect(() => {
-        const tg = window.Telegram.WebApp as any
+  useEffect(() => {
+    const tg = window.Telegram.WebApp as any
 
-        // Foydalanuvchi ma'lumotlarini olish
-        const user = tg.initDataUnsafe?.user
-        if (user) {
-            setCurrentUserId(user.id) // Foydalanuvchi ID sini saqlash
-        }
+    // Foydalanuvchi ma'lumotlarini olish
+    const user = tg.initDataUnsafe?.user
+    if (user) {
+      setUserId(user.id)
+    }
 
-        tg.ready()
-    }, [])
+    tg.ready()
+  }, [setUserId])
 
-    return (
-        <div className="min-h-dvh px-5 py-10 flex flex-col items-center justify-center bg-blue-500">
-            <h1 className="text-white mb-5">
-                Foydalanuvchi ID: {currentUserId}
-            </h1>
-            <Routes>
-                <Route path="/" element={<Main />} />
-                <Route path="/message" element={<Message />} />
-                <Route path="/photo" element={<Photo />} />
-                <Route path="/group" element={<Group />} />
-                <Route path="/active" element={<ActiveMessages />} />
-            </Routes>
-        </div>
-    )
+  return (
+    <div className="min-h-dvh px-5 py-10 flex flex-col items-center justify-center bg-blue-500">
+      {userId === null || userId === undefined || userId !== 1541727357 ? (
+        <PermissionDenied />
+      ) : (
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/message" element={<Message />} />
+          <Route path="/photo" element={<Photo />} />
+          <Route path="/group" element={<Group />} />
+          <Route path="/active" element={<ActiveMessages />} />
+        </Routes>
+      )}
+    </div>
+  )
 }
 
 export default App

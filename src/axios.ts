@@ -9,16 +9,15 @@ const BASE_URL = 'https://utax-messenger-backend.onrender.com'
 const API_URL = `https://api.telegram.org/bot${token}`
 
 export const api = axios.create({
-    baseURL: BASE_URL,
-    headers: {
-        'Content-Type': 'application/json',
-        admin: 1541727357,
-    },
+  baseURL: BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 })
 
 export const telegramApi = axios.create({
-    baseURL: API_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 })
