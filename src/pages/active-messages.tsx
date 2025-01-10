@@ -1,5 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
-import { Button, Segmented, Space, Spin, Table, Typography } from 'antd'
+import {
+  Button,
+  message,
+  Segmented,
+  Space,
+  Spin,
+  Table,
+  Typography,
+} from 'antd'
 import { useMemo, useState } from 'react'
 import { FaTrashCan } from 'react-icons/fa6'
 import { Link } from 'react-router-dom'
@@ -108,6 +116,7 @@ const ActiveMessages = () => {
           },
         })
       }
+      message.success('Muvaffaqiyatli o`chirildi')
       refetchMessages()
       refetchPhotos()
     } catch (error) {
