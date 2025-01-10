@@ -66,10 +66,10 @@ const ActiveMessages = () => {
       title: 'Amallar',
       dataIndex: 'actions',
       key: 'actions',
-      render: (id: string) => (
+      render: ({ id, type }: { id: string; type: MessageType }) => (
         <Space>
           <Button
-            onClick={() => handleDelete(id)}
+            onClick={() => handleDelete(id, type)}
             type="primary"
             danger
             disabled={Boolean(deleteLoading[id])}
@@ -92,14 +92,22 @@ const ActiveMessages = () => {
     {}
   )
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, type: MessageType) => {
     setDeleteLoading((prev) => ({ ...prev, [id]: true }))
     try {
-      await api.post('/message/delete', {
-        where: {
-          id,
-        },
-      })
+      if (type === 'message') {
+        await api.post('/message/delete', {
+          where: {
+            id,
+          },
+        })
+      } else {
+        await api.post('/photo/delete', {
+          where: {
+            id,
+          },
+        })
+      }
       refetchMessages()
       refetchPhotos()
     } catch (error) {
@@ -144,7 +152,7 @@ const ActiveMessages = () => {
                   text: segmentedValue === 'message' ? item.text : item.caption,
                   key: index,
                   index: index + 1,
-                  actions: item.id,
+                  actions: { id: item.id, type: segmentedValue },
                 }))
               : []
           }
