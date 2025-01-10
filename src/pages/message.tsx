@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { Button, Form, Select, TimePicker } from 'antd'
+import { Button, Form, message, Select, TimePicker } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -16,6 +16,7 @@ const Message = () => {
         'THURSDAY',
         'FRIDAY',
     ])
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     const { mutate } = useMutation({
         mutationKey: ['add-message'],
@@ -46,6 +47,13 @@ const Message = () => {
 
     const onFinish = useCallback(
         async (values: Record<string, any>) => {
+            setIsSubmitting(true)
+            if (!groups?.length) {
+                message.error('Guruhlar ro`yhati bo`sh')
+                setIsSubmitting(false)
+                return
+            }
+
             const sendData = {
                 text: values.message,
                 sendTime: values.sendTime
@@ -66,6 +74,7 @@ const Message = () => {
                     })
                 }
             }
+            setIsSubmitting(false)
         },
         [mutate, groups]
     )
@@ -161,6 +170,7 @@ const Message = () => {
                         type="primary"
                         size="large"
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg w-full md:w-auto"
+                        disabled={isSubmitting}
                     >
                         Yuborish
                     </Button>

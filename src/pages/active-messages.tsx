@@ -5,6 +5,8 @@ import { FaTrashCan } from 'react-icons/fa6'
 import { Link } from 'react-router-dom'
 import { api } from '../axios'
 
+type MessageType = 'message' | 'photo'
+
 const ActiveMessages = () => {
     const { Title } = Typography
     const {
@@ -31,7 +33,7 @@ const ActiveMessages = () => {
         },
     })
 
-    const [segmentedValue, setSegmentedValue] = useState('message')
+    const [segmentedValue, setSegmentedValue] = useState<MessageType>('message')
 
     const columns = [
         {
@@ -112,11 +114,13 @@ const ActiveMessages = () => {
                     { label: 'Rasmli', value: 'photo' },
                 ]}
                 value={segmentedValue}
-                onChange={(value) => setSegmentedValue(value)}
+                onChange={(value) => setSegmentedValue(value as MessageType)}
             />
-            <Link className="block mt-2" to={'/'}>
-                <Button type="primary">Bosh sahifa</Button>
-            </Link>
+            <div className="mt-2">
+                <Link className="" to={'/'}>
+                    <Button type="primary">Bosh sahifa</Button>
+                </Link>
+            </div>
             <div className="mt-6">
                 <Table
                     columns={columns}
@@ -129,6 +133,10 @@ const ActiveMessages = () => {
                                       index: number
                                   ) => ({
                                       ...item,
+                                      text:
+                                          segmentedValue === 'message'
+                                              ? item.text
+                                              : item.caption,
                                       key: index,
                                       index: index + 1,
                                       actions: item.id,

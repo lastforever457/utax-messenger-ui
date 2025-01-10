@@ -97,7 +97,8 @@ const Photo = () => {
     const onFinish = useCallback(
         async (values: Record<string, any>) => {
             const sendData = {
-                text: values.message,
+                caption: values.message,
+                image: imageUrl,
                 sendTime: values.sendTime
                     ? values.sendTime.format('HH:mm')
                     : undefined,
