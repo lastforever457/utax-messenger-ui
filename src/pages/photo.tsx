@@ -1,13 +1,63 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { Button, Form, Select, TimePicker } from 'antd'
+import { Button, Form, message, Select, TimePicker, Upload } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
+import axios from 'axios'
 import { useCallback, useEffect, useState } from 'react'
+import { FaUpload } from 'react-icons/fa6'
 import { Link } from 'react-router-dom'
 import { api, telegramApi } from '../axios'
 import { weekdays } from '../types'
 
-const Message = () => {
+const Photo = () => {
     const [form] = Form.useForm()
+    const [loading, setLoading] = useState(false)
+    const [imageUrl, setImageUrl] = useState<string | null>(null)
+    const [previewVisible, setPreviewVisible] = useState(false)
+
+    const uploadProps = {
+        name: 'file',
+        multiple: false,
+        customRequest: async (options: any) => {
+            const { file, onSuccess, onError } = options
+            const apiKey = '1c2b36b4778c4e6f436e113454262df4' // ImageBB API kalitingizni kiriting
+            const formData = new FormData()
+            formData.append('image', file)
+
+            try {
+                setLoading(true)
+                const response = await axios.post(
+                    `https://api.imgbb.com/1/upload?key=${apiKey}`,
+                    formData
+                )
+                setLoading(false)
+                if (response.data.success) {
+                    setImageUrl(response.data.data.url)
+                    message.success('Rasm muvaffaqiyatli yuklandi!')
+                    onSuccess('OK')
+                } else {
+                    throw new Error('Yuklashda xatolik yuz berdi!')
+                }
+            } catch (error) {
+                setLoading(false)
+                console.error(error)
+                message.error('Rasm yuklashda xatolik yuz berdi!')
+                onError(error)
+            }
+        },
+        showUploadList: false, // Yuklangan fayllar ro'yxatini yashirish
+
+        onPreview: () => {
+            setPreviewVisible(true)
+        },
+    }
+
+    const getValueFromEvent = (e: any) => {
+        console.log('Upload event:', e)
+        if (Array.isArray(e)) {
+            return e
+        }
+        return e?.fileList
+    }
     const [messageInterval, setMessageInterval] = useState<string>('ONCE')
     const [selectedWeekdays, setSelectedWeekdays] = useState<weekdays[]>([
         'MONDAY',
@@ -18,13 +68,13 @@ const Message = () => {
     ])
 
     const { mutate } = useMutation({
-        mutationKey: ['add-message'],
+        mutationKey: ['add-photo'],
         mutationFn: async (data: Record<string, any>) => {
             try {
-                await api.post('/message/create', { data })
+                await api.post('/photo/create', { data })
             } catch (error) {
-                console.error('Error creating message:', error)
-                throw new Error('Failed to create message')
+                console.error('Error creating photo:', error)
+                throw new Error('Failed to create photo')
             }
         },
     })
@@ -60,14 +110,17 @@ const Message = () => {
             } else {
                 console.log('hello')
                 for (const group of groups) {
-                    await telegramApi.post('/sendMessage', {
+                    await telegramApi.post('/sendPhoto', {
                         chat_id: `-${group.groupId}`,
-                        text: values.message,
+                        photo: imageUrl,
+                        caption: values.message,
                     })
                 }
             }
+
+            form.resetFields()
         },
-        [mutate, groups]
+        [mutate, groups, imageUrl, form]
     )
 
     return (
@@ -82,6 +135,30 @@ const Message = () => {
                 layout="vertical"
                 className="bg-white rounded-lg shadow-lg p-6 w-full"
             >
+                <Form.Item
+                    name="file"
+                    label={<span className="text-black">Rasmlar</span>}
+                    valuePropName="fileList"
+                    getValueFromEvent={getValueFromEvent}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Rasmlar kiritilmagan!',
+                        },
+                    ]}
+                >
+                    <Upload
+                        {...uploadProps}
+                        showUploadList={false}
+                        previewFile={previewVisible ? (imageUrl as any) : null}
+                        accept="image/*"
+                    >
+                        <Button icon={<FaUpload />} loading={loading}>
+                            {loading ? 'Yuklanmoqda...' : 'Rasm yuklash'}
+                        </Button>
+                    </Upload>
+                </Form.Item>
+
                 <Form.Item
                     label={<span className="text-black">Xabar matni</span>}
                     name="message"
@@ -179,4 +256,4 @@ const Message = () => {
     )
 }
 
-export default Message
+export default Photo

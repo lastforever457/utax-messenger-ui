@@ -129,6 +129,7 @@ const ActiveMessages = () => {
                                       index: number
                                   ) => ({
                                       ...item,
+                                      key: index,
                                       index: index + 1,
                                       actions: item.id,
                                   })

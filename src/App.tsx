@@ -1,8 +1,10 @@
+import { Group } from 'antd/es/avatar'
 import { useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import ActiveMessages from './pages/active-messages'
 import Main from './pages/main'
 import Message from './pages/message'
+import Photo from './pages/photo'
 
 function App() {
     useEffect(() => {
@@ -20,7 +22,8 @@ function App() {
             <Routes>
                 <Route path="/" element={<Main />} />
                 <Route path="/message" element={<Message />} />
-                <Route path="/photo" element={<div>Photo</div>} />
+                <Route path="/photo" element={<Photo />} />
+                <Route path="/group" element={<Group />} />
                 <Route path="/active" element={<ActiveMessages />} />
             </Routes>
         </div>
