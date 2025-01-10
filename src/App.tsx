@@ -25,7 +25,9 @@ function App() {
 
   return (
     <div className="min-h-dvh px-5 py-10 flex flex-col items-center justify-center bg-blue-500">
-      {userId === null || userId === undefined || userId !== 1541727357 ? (
+      {userId === null ||
+      userId === undefined ||
+      (userId !== 1541727357 && userId !== 858063187) ? (
         <PermissionDenied />
       ) : (
         <Routes>
