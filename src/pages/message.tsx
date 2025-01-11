@@ -69,7 +69,7 @@ const Message = () => {
       } else {
         for (const group of groups) {
           await telegramApi.post('/sendMessage', {
-            chat_id: `-${group.groupId}`,
+            chat_id: group.groupId,
             text: values.message,
           })
         }
