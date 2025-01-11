@@ -4,7 +4,6 @@ import ActiveMessages from './pages/active-messages'
 import Group from './pages/group'
 import Main from './pages/main'
 import Message from './pages/message'
-import PermissionDenied from './pages/permission-denied'
 import Photo from './pages/photo'
 import { useUserId } from './user-context'
 
@@ -24,8 +23,8 @@ function App() {
   }, [setUserId])
 
   return (
-    <div className="min-h-dvh px-5 py-10 flex flex-col items-center justify-center bg-blue-500">
-      {userId === null ||
+    <div className="min-h-dvh px-5 py-10 flex flex-col items-center justify-center container mx-auto">
+      {/* {userId === null ||
       userId === undefined ||
       (userId !== 1541727357 && userId !== 858063187) ? (
         <PermissionDenied />
@@ -37,7 +36,14 @@ function App() {
           <Route path="/group" element={<Group />} />
           <Route path="/active" element={<ActiveMessages />} />
         </Routes>
-      )}
+      )} */}
+      <Routes>
+        <Route path="/" element={<Main />} />
+        <Route path="/message" element={<Message />} />
+        <Route path="/photo" element={<Photo />} />
+        <Route path="/group" element={<Group />} />
+        <Route path="/active" element={<ActiveMessages />} />
+      </Routes>
     </div>
   )
 }

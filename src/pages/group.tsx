@@ -32,7 +32,7 @@ const Group: React.FC = () => {
 
   return (
     <div className="container mx-auto py-12">
-      <h1 className="text-4xl font-bold text-white mb-12">
+      <h1 className="text-4xl font-bold text-black mb-12">
         Bot azo bo&apos;lgan guruhlar
       </h1>
       <div className="flex items-center mb-3">

@@ -82,8 +82,8 @@ const Message = () => {
   )
 
   return (
-    <div className="flex flex-col items-center justify-center bg-blue-500 w-full">
-      <h1 className="text-2xl font-bold text-white drop-shadow-md mb-12">
+    <div className="flex flex-col items-center justify-center w-full p-10 md:p-24 bg-white rounded-2xl shadow-2xl">
+      <h1 className="text-3xl font-bold text-gray-800 mb-7">
         Oddiy xabar yuborish
       </h1>
 
@@ -91,10 +91,10 @@ const Message = () => {
         form={form}
         onFinish={onFinish}
         layout="vertical"
-        className="bg-white rounded-lg shadow-lg p-6 w-full"
+        className="w-full"
       >
         <Form.Item
-          label={<span className="text-black">Xabar matni</span>}
+          label={<span className="text-gray-800">Xabar matni</span>}
           name="message"
           rules={[
             {
@@ -105,12 +105,16 @@ const Message = () => {
         >
           <TextArea
             rows={4}
-            className="bg-transparent text-black border-2 border-gray-300 rounded-lg p-2"
+            className="bg-transparent border border-gray-300 rounded-lg p-2 w-full"
           />
         </Form.Item>
 
         <Form.Item name="interval" label="Interval">
-          <Select onChange={setMessageInterval} defaultValue={messageInterval}>
+          <Select
+            onChange={setMessageInterval}
+            defaultValue={messageInterval}
+            className="w-full"
+          >
             <Select.Option value="ONCE">Bir marta</Select.Option>
             <Select.Option value="HOURLY">Har soatda</Select.Option>
             <Select.Option value="DAILY">Har kuni</Select.Option>
@@ -124,6 +128,7 @@ const Message = () => {
               mode="multiple"
               onChange={setSelectedWeekdays}
               defaultValue={selectedWeekdays}
+              className="w-full"
             >
               {[
                 'MONDAY',
@@ -172,7 +177,7 @@ const Message = () => {
         <Link to="/">
           <Button
             size="large"
-            className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg w-full md:w-auto"
+            className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg w-full md:w-auto mt-4"
           >
             Orqaga
           </Button>

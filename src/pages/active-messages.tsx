@@ -137,15 +137,15 @@ const ActiveMessages = () => {
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 w-full">
       <Title level={3}>Aktiv xabarlar</Title>
-      <Segmented
-        options={[
-          { label: 'Oddiy', value: 'message' },
-          { label: 'Rasmli', value: 'photo' },
-        ]}
-        value={segmentedValue}
-        onChange={(value) => setSegmentedValue(value as MessageType)}
-      />
-      <div className="mt-2">
+      <div className="flex justify-between items-center">
+        <Segmented
+          options={[
+            { label: 'Oddiy', value: 'message' },
+            { label: 'Rasmli', value: 'photo' },
+          ]}
+          value={segmentedValue}
+          onChange={(value) => setSegmentedValue(value as MessageType)}
+        />
         <Link className="" to={'/'}>
           <Button type="primary">Bosh sahifa</Button>
         </Link>

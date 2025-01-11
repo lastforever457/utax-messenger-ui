@@ -12,9 +12,7 @@ import { weekdays } from '../types'
 const Photo = () => {
   const [form] = Form.useForm()
   const api = useAxiosApi()
-  const [loading, setLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState<string | null>(null)
-  const [previewVisible, setPreviewVisible] = useState(false)
   const [isSending, setIsSending] = useState(false)
 
   const uploadProps = {
@@ -27,12 +25,10 @@ const Photo = () => {
       formData.append('image', file)
 
       try {
-        setLoading(true)
         const response = await axios.post(
           `https://api.imgbb.com/1/upload?key=${apiKey}`,
           formData
         )
-        setLoading(false)
         if (response.data.success) {
           setImageUrl(response.data.data.url)
           message.success('Rasm muvaffaqiyatli yuklandi!')
@@ -41,17 +37,11 @@ const Photo = () => {
           throw new Error('Yuklashda xatolik yuz berdi!')
         }
       } catch (error) {
-        setLoading(false)
-        console.error(error)
         message.error('Rasm yuklashda xatolik yuz berdi!')
         onError(error)
       }
     },
     showUploadList: false, // Yuklangan fayllar ro'yxatini yashirish
-
-    onPreview: () => {
-      setPreviewVisible(true)
-    },
   }
 
   const getValueFromEvent = (e: any) => {
@@ -129,20 +119,20 @@ const Photo = () => {
   )
 
   return (
-    <div className="flex flex-col items-center justify-center bg-blue-500 w-full">
-      <h1 className="text-2xl font-bold text-white drop-shadow-md mb-12">
-        Oddiy xabar yuborish
+    <div className="flex flex-col items-center justify-center w-full p-10 md:p-24 bg-white rounded-2xl shadow-2xl">
+      <h1 className="text-2xl font-bold text-gray-800 mb-7">
+        Rasmli xabar yuborish
       </h1>
 
       <Form
         form={form}
         onFinish={onFinish}
         layout="vertical"
-        className="bg-white rounded-lg shadow-lg p-6 w-full"
+        className="w-full"
       >
         <Form.Item
           name="file"
-          label={<span className="text-black">Rasmlar</span>}
+          label={<span className="text-gray-800">Rasmlar</span>}
           valuePropName="fileList"
           getValueFromEvent={getValueFromEvent}
           rules={[
@@ -154,13 +144,13 @@ const Photo = () => {
         >
           <Upload
             {...uploadProps}
-            showUploadList={false}
-            previewFile={previewVisible ? (imageUrl as any) : null}
+            showUploadList={true}
+            listType="picture-card"
+            previewFile={imageUrl as any}
             accept="image/*"
+            maxCount={1}
           >
-            <Button icon={<FaUpload />} loading={loading}>
-              {loading ? 'Yuklanmoqda...' : 'Rasm yuklash'}
-            </Button>
+            {!imageUrl && <FaUpload />}
           </Upload>
         </Form.Item>
 
