@@ -32,7 +32,7 @@ const Group: React.FC = () => {
 
   return (
     <div className="container mx-auto py-12">
-      <h1 className="text-4xl font-bold text-black mb-12">
+      <h1 className="text-3xl font-bold text-black mb-12">
         Bot azo bo&apos;lgan guruhlar
       </h1>
       <div className="flex items-center mb-3">
@@ -40,26 +40,25 @@ const Group: React.FC = () => {
           <Button>Bosh sahifaga</Button>
         </Link>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {groups?.map((group: Record<string, any>, index: number) => (
-          <div
-            className="bg-white flex items-center justify-between rounded-lg shadow-lg p-6"
-            key={index}
-          >
-            <h2 className="text-2xl font-bold">{group.title}</h2>
-            <Popconfirm
-              title="Bu guruhni o'chirishni tasdiqlaysizmi?"
-              onConfirm={() => mutate(group.id)}
-              okText="Ha"
-              cancelText="Yo'q"
-            >
-              <button className="bg-red-500 text-white px-4 py-2 rounded-md">
-                <FaTrashCan />
-              </button>
-            </Popconfirm>
-          </div>
+          <li className="bg-white rounded-lg shadow px-6 py-4" key={index}>
+            <div className="flex justify-between">
+              <h2 className="text-2xl font-semibold">{group.title}</h2>
+              <Popconfirm
+                title="Bu guruhni o'chirishni tasdiqlaysizmi?"
+                onConfirm={() => mutate(group.id)}
+                okText="Ha"
+                cancelText="Yo'q"
+              >
+                <button className="bg-red-500 text-white px-4 py-2 rounded-md">
+                  <FaTrashCan />
+                </button>
+              </Popconfirm>
+            </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   )
 }
