@@ -104,7 +104,7 @@ const Photo = () => {
       } else {
         for (const group of groups) {
           await telegramApi.post('/sendPhoto', {
-            chat_id: `-${group.groupId}`,
+            chat_id: `${group.groupId}`,
             photo: imageUrl,
             caption: values.message,
           })
